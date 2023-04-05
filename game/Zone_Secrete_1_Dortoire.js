@@ -2,6 +2,10 @@ class Dortoire extends Phaser.Scene {
     constructor() {
         super("Dortoire");
     }
+    init(data){
+        this.coX = data.x 
+        this.coY = data.y
+    }
     preload() {
         this.load.image('Tileset1', 'assets/maps/newstileset.png');
 
@@ -50,11 +54,18 @@ class Dortoire extends Phaser.Scene {
         this.Ciel.setDepth(2);
         this.SurCiel = map.createLayer('Calque 7 SurCiel', tileset)
         this.SurCiel.setDepth(3);
-        //this.Teleportation = map.createLayer('Calque 8 Teleportation', tileset)
+        
+        this.player = this.physics.add.sprite(this.coX, this.coY, 'player').setSize(15,25).setOffset(7,5);
+        this.player.setDepth(1)
 
-
-        this.player = this.physics.add.sprite(96 * 16, 95 * 16, 'player').setSize(15, 25).setOffset(7, 5);
-        this.player.setDepth(1);
+        //if(this.coX && this.coY){
+        //    this.player = this.physics.add.sprite(this.coX, this.coY, 'player').setSize(15,25).setOffset(7,5);
+        //   
+        //}
+        //else{this.player = this.physics.add.sprite(96 * 16, 95 * 16, 'player').setSize(15, 25).setOffset(7, 5);
+        //}
+        //    this.player.setDepth(1)
+//
 
         //this.enemy = enemy = this.physics.add.sprite(155 * 16, 287 * 16, 'enemy');
         //this.enemy.setCollideWorldBounds(true);

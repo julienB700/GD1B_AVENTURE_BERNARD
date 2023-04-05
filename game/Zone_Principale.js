@@ -40,7 +40,22 @@ class monjeu extends Phaser.Scene {
             "Calque 8 Teleportation",
             tileset,
         )
-
+        const tp2 = map.createLayer(
+            "Calque 9 tp1",
+            tileset,
+        )
+        const tp3 = map.createLayer(
+            "Calque 10 tp2",
+            tileset,
+        )
+        const tp4 = map.createLayer(
+            "Calque 11 tp3",
+            tileset,
+        )
+        const tp5 = map.createLayer(
+            "Calque 12 tp4",
+            tileset,
+        )
         this.Sol = map.createLayer('Calque 1 Sol', tileset)
         this.murnoir = map.createLayer('Calque 2 Collision', tileset)
         this.Deco1 = map.createLayer('Calque 3 Décoration 1', tileset)
@@ -51,6 +66,7 @@ class monjeu extends Phaser.Scene {
         this.SurCiel = map.createLayer('Calque 7 SurCiel', tileset)
         this.SurCiel.setDepth(3);
         //this.Teleportation = map.createLayer('Calque 8 Teleportation', tileset)
+
         if(this.coX && this.coY){
             this.player = this.physics.add.sprite(this.coX, this.coY, 'player').setSize(15,25).setOffset(7,5);
         }
@@ -75,9 +91,25 @@ class monjeu extends Phaser.Scene {
         this.Deco3.setCollisionByProperty({ estSolide: true });
         this.physics.add.collider(this.player, this.Deco3);
 
+        //TELEPORTEUR DE CHANGEMENT DE SCENE DE LA SALLE 1
+
         Teleportation.setCollisionByExclusion (-1, true);
         this.physics.add.collider(this.player, Teleportation,this.changeScene, null, this);
+
+        tp2.setCollisionByExclusion (-1, true);
+        this.physics.add.collider(this.player, tp2,this.changeScene2, null, this);
         
+        //TELEPORTEUR DE CHANGEMENT DE SCENE DE LA SALLE 2
+        tp3.setCollisionByExclusion (-1, true);
+        this.physics.add.collider(this.player, tp3,this.changeScene3, null, this);
+
+        tp4.setCollisionByExclusion (-1, true);
+        this.physics.add.collider(this.player, tp4,this.changeScene4, null, this);
+
+        //TELEPORTEUR DE CHANGEMENT DE SCENE 3
+
+        tp5.setCollisionByExclusion (-1, true);
+        this.physics.add.collider(this.player, tp5,this.changeScene5, null, this);
 
         this.clavier = this.input.keyboard.addKeys('S,Q,D,Z,SPACE,SHIFT');
 
@@ -207,6 +239,18 @@ class monjeu extends Phaser.Scene {
 
     }
     changeScene(){
-        this.scene.start("Dortoire")
+        this.scene.start("Dortoire",{x: 96 * 16, y: 95 * 16},)
+    }
+    changeScene2(){
+        this.scene.start("Dortoire", {x: 97 * 16, y: 6 * 16})
+    }
+    changeScene3(){
+        this.scene.start("Labo", {x: 5 * 16, y: 96 * 16})
+    }
+    changeScene4(){
+        this.scene.start("Labo", {x: 95 * 16, y: 96 * 16})
+    }
+    changeScene5(){
+        this.scene.start("Hall", {x: 2 * 16, y: 58 * 16})
     }
 }
