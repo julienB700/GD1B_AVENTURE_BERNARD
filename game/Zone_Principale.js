@@ -121,7 +121,7 @@ class monjeu extends Phaser.Scene {
         this.camera.startFollow(this.player);
         this.camera.setDeadzone(100, 100);
         this.camera.setBounds(0, 0, 299 * 16, 299 * 16);
-        this.cameras.main.zoom = 2
+        this.cameras.main.zoom = 1.8
 
 
 

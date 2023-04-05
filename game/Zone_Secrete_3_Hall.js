@@ -49,7 +49,7 @@ class Hall extends Phaser.Scene {
         //this.Teleportation = map.createLayer('Calque 8 Teleportation', tileset)
 
 
-        this.player = this.physics.add.sprite(this.coX, this.coY, 'player').setSize(15,25).setOffset(7,5);
+        this.player = this.physics.add.sprite(2 * 16 , 58 * 16, 'player').setSize(15,25).setOffset(7,5);
         this.player.setDepth(1)
 
         //this.enemy = enemy = this.physics.add.sprite(155 * 16, 287 * 16, 'enemy');
@@ -76,7 +76,7 @@ class Hall extends Phaser.Scene {
         // Create interact button
         this.interactButton = this.input.keyboard.addKey('E');
 
-        this.camera = this.cameras.main.setSize(900, 700);
+        this.camera = this.cameras.main.setSize(1600,900);
 
         this.camera.startFollow(this.player);
         this.camera.setDeadzone(100, 100);

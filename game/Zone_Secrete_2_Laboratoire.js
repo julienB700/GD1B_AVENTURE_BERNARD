@@ -87,7 +87,7 @@ class Labo extends Phaser.Scene {
         // Create interact button
         this.interactButton = this.input.keyboard.addKey('E');
 
-        this.camera = this.cameras.main.setSize(900, 700);
+        this.camera = this.cameras.main.setSize(1600, 900);
 
         this.camera.startFollow(this.player);
         this.camera.setDeadzone(100, 100);
