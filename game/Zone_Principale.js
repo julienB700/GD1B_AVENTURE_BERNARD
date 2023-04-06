@@ -14,7 +14,7 @@ class monjeu extends Phaser.Scene {
         this.load.spritesheet('Chests', 'assets/sprites/Chests.png',
             { frameWidth: 32, frameHeight: 32 });
 
-        this.load.spritesheet('enemy', 'assets/sprites/robot.sprites.png',
+        this.load.spritesheet('enemy', 'assets/sprites/Robot_Mouse-sheet.png',
             { frameWidth: 32, frameHeight: 32 });
 
 
@@ -28,6 +28,8 @@ class monjeu extends Phaser.Scene {
 
         this.player;
         this.enemy;
+        this.hp = 100;
+
 
         //this.npc;
 
@@ -75,6 +77,9 @@ class monjeu extends Phaser.Scene {
         }
         this.player.setDepth(1);
 
+        this.enemy = this.physics.add.sprite(155 * 16, 249 * 16, 'enemy').setSize(18,23).setOffset(11,8);
+        this.enemy.setDepth(1);
+
         //this.enemy = enemy = this.physics.add.sprite(155 * 16, 287 * 16, 'enemy');
         //this.enemy.setCollideWorldBounds(true);
         //this.enemy.setDepth(1);
@@ -90,6 +95,19 @@ class monjeu extends Phaser.Scene {
         this.physics.add.collider(this.player, this.Deco2);
         this.Deco3.setCollisionByProperty({ estSolide: true });
         this.physics.add.collider(this.player, this.Deco3);
+
+
+        this.murnoir.setCollisionByProperty({ estSolide: true });
+        this.physics.add.collider(this.enemy, this.murnoir);
+        this.Deco1.setCollisionByProperty({ estSolide: true });
+        this.physics.add.collider(this.enemy, this.Deco1);
+        this.Deco2.setCollisionByProperty({ estSolide: true });
+        this.physics.add.collider(this.enemy, this.Deco2);
+        this.Deco3.setCollisionByProperty({ estSolide: true });
+        this.physics.add.collider(this.enemy, this.Deco3);
+
+        this.physics.add.collider(this.player, this.enemy, this.handlePlayerEnemyCollision, null, this);
+        // ...
 
         //TELEPORTEUR DE CHANGEMENT DE SCENE DE LA SALLE 1
 
@@ -199,17 +217,24 @@ class monjeu extends Phaser.Scene {
     }
 
     update() {
-        //if (Phaser.Math.Distance.Between(enemy.x, enemy.y, player.x, player.y) > 100) {
+        var distance = Phaser.Math.Distance.Between(this.enemy.x, this.enemy.y, this.player.x, this.player.y);
+        if(distance < 300){
+            this.enemy.setVelocityX(this.player.x-this.enemy.x)
+            this.enemy.setVelocityY(this.player.y-this.enemy.y)
+        }
+        else{this.enemy.setVelocity(0)}
+
+        //if (Phaser.Math.Distance.Between(this.enemy.x, this.enemy.y, this.player.x, this.player.y) > 100) {
         //	this.physics.moveToObject(enemy, player, 100);
         //}
         //else {
-        //	enemy.body.setVelocity(0, 0);
+        //	this.enemy.body.setVelocity(0, 0);
         //	// attack player if close enough
-        //	if (Phaser.Math.Distance.Between(enemy.x, enemy.y, player.x, player.y) < 50) {
-        //		player.setTint(0xff0000);
+        //	if (Phaser.Math.Distance.Between(this.enemy.x, this.enemy.y, this.player.x, this.player.y) < 50) {
+        //		this.player.setTint(0xff0000);
         //	}
         //	else {
-        //		player.clearTint();
+        //		this.player.clearTint();
         //	}
         //}
 
@@ -237,6 +262,16 @@ class monjeu extends Phaser.Scene {
             this.player.anims.play('idle', true);
         }
 
+    }
+    handlePlayerEnemyCollision() {
+        this.hp -= 10
+        this.player.setTint(0xff0000);
+        if (this.hp <= 0) {
+            this.handlePlayerDeath();
+        };
+    }
+    handlePlayerDeath() {
+        this.scene.start("Menu");
     }
     changeScene(){
         this.scene.start("Dortoire",{x: 96 * 16, y: 95 * 16},)
