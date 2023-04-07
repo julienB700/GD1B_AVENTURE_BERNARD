@@ -8,6 +8,7 @@ class monjeu extends Phaser.Scene {
     }
     preload() {
         this.load.image('Tileset1', 'assets/maps/newstileset.png');
+        this.load.image("UI","Assets/sprites/UI1.1.png");
 
         this.load.spritesheet('player', 'assets/sprites/supercat_sprites.png',
             { frameWidth: 32, frameHeight: 32 });
@@ -58,6 +59,8 @@ class monjeu extends Phaser.Scene {
             "Calque 12 tp4",
             tileset,
         )
+        
+
         this.Sol = map.createLayer('Calque 1 Sol', tileset)
         this.murnoir = map.createLayer('Calque 2 Collision', tileset)
         this.Deco1 = map.createLayer('Calque 3 Décoration 1', tileset)
@@ -130,17 +133,18 @@ class monjeu extends Phaser.Scene {
         this.physics.add.collider(this.player, tp5,this.changeScene5, null, this);
 
         this.clavier = this.input.keyboard.addKeys('S,Q,D,Z,SPACE,SHIFT');
+        this.add.image(this.player.x+333*16 ,450*16 , "UI").setScale(1).setScrollFactor(0);
 
         // Create interact button
         this.interactButton = this.input.keyboard.addKey('E');
 
-        this.camera = this.cameras.main.setSize(1600, 900);
+        this.camera = this.cameras.main.setSize(1280, 720);
 
         this.camera.startFollow(this.player);
         this.camera.setDeadzone(100, 100);
         this.camera.setBounds(0, 0, 299 * 16, 299 * 16);
         this.cameras.main.zoom = 1.8
-
+        
 
 
         this.anims.create({
@@ -214,6 +218,7 @@ class monjeu extends Phaser.Scene {
             repeat: -1
         });
 
+        this.add.image(this.player.x+450,230, "UI").setScale(1).setScrollFactor(0);
     }
 
     update() {
@@ -274,7 +279,7 @@ class monjeu extends Phaser.Scene {
         this.scene.start("Labo",  {x: 51 * 16, y: 74 * 16});
     }
     changeScene(){
-        this.scene.start("Dortoire",{x: 96 * 16, y: 6 * 16},)
+        this.scene.start("Dortoire",{x: 96 * 16, y: 95 * 16},)
     }
     changeScene2(){
         this.scene.start("Dortoire", {x: 97 * 16, y: 6 * 16})
