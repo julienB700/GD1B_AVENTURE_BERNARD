@@ -271,10 +271,10 @@ class monjeu extends Phaser.Scene {
         };
     }
     handlePlayerDeath() {
-        this.scene.start("Menu");
+        this.scene.start("Labo",  {x: 51 * 16, y: 74 * 16});
     }
     changeScene(){
-        this.scene.start("Dortoire",{x: 96 * 16, y: 95 * 16},)
+        this.scene.start("Dortoire",{x: 96 * 16, y: 6 * 16},)
     }
     changeScene2(){
         this.scene.start("Dortoire", {x: 97 * 16, y: 6 * 16})
