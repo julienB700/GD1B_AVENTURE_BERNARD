@@ -8,7 +8,8 @@ class monjeu extends Phaser.Scene {
     }
     preload() {
         this.load.image('Tileset1', 'assets/maps/newstileset.png');
-        this.load.image("UI","Assets/sprites/UI1.1.png");
+        this.load.image("UI","Assets/ui.png");
+        this.load.image("background", "Assets/maps/ZL_MAP_PRINCIPAL.png");
 
         this.load.spritesheet('player', 'assets/sprites/supercat_sprites.png',
             { frameWidth: 32, frameHeight: 32 });
@@ -32,8 +33,7 @@ class monjeu extends Phaser.Scene {
         this.hp = 100;
 
 
-        //this.npc;
-
+        this.add.image(300,300,"background");
 
 
         // TILED - load la map
@@ -138,7 +138,7 @@ class monjeu extends Phaser.Scene {
         // Create interact button
         this.interactButton = this.input.keyboard.addKey('E');
 
-        this.camera = this.cameras.main.setSize(1280, 720);
+        this.camera = this.cameras.main.setSize(1600, 900);
 
         this.camera.startFollow(this.player);
         this.camera.setDeadzone(100, 100);
@@ -185,40 +185,25 @@ class monjeu extends Phaser.Scene {
 
         this.anims.create({
             key: 'right_mob',
-            frames: this.anims.generateFrameNumbers('enemy', { start: 1, end: 6}),
+            frames: this.anims.generateFrameNumbers('enemy', { start: 4, end: 6}),
             frameRate: 10,
             repeat: -1
         });
 
         this.anims.create({
             key: 'left_mob',
-            frames: this.anims.generateFrameNumbers('enemy', { start: 8, end: 13 }),
+            frames: this.anims.generateFrameNumbers('enemy', { start: 7, end: 9 }),
             frameRate: 10,
             repeat: -1
         });
-
-        this.anims.create({
-            key: 'up_mob',
-            frames: this.anims.generateFrameNumbers('enemy', { start: 1, end: 6 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'down_mob',
-            frames: this.anims.generateFrameNumbers('enemy', { start: 8, end: 13 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
         this.anims.create({
             key: 'idle_mob',
-            frames: this.anims.generateFrameNumbers('enemy', { start: 14, end: 17 }),
+            frames: this.anims.generateFrameNumbers('enemy', { start: 0, end: 3 }),
             frameRate: 4,
             repeat: -1
         });
 
-        this.add.image(this.player.x+450,230, "UI").setScale(1).setScrollFactor(0);
+        this.add.image(this.player.x+ 155,289, "UI").setScale(1).setScrollFactor(0);
     }
 
     update() {
@@ -226,33 +211,25 @@ class monjeu extends Phaser.Scene {
         if(distance < 300){
             this.enemy.setVelocityX(this.player.x-this.enemy.x)
             this.enemy.setVelocityY(this.player.y-this.enemy.y)
+            
         }
-        else{this.enemy.setVelocity(0)}
-
-        //if (Phaser.Math.Distance.Between(this.enemy.x, this.enemy.y, this.player.x, this.player.y) > 100) {
-        //	this.physics.moveToObject(enemy, player, 100);
-        //}
-        //else {
-        //	this.enemy.body.setVelocity(0, 0);
-        //	// attack player if close enough
-        //	if (Phaser.Math.Distance.Between(this.enemy.x, this.enemy.y, this.player.x, this.player.y) < 50) {
-        //		this.player.setTint(0xff0000);
-        //	}
-        //	else {
-        //		this.player.clearTint();
-        //	}
-        //}
-
+        else{this.enemy.setVelocity(0)
+            this.enemy.anims.play('right_mob')
+        }
 
         if (this.clavier.Z.isDown) {
             this.player.setVelocityY(-260);
-            this.player.anims.play('up', true);
+            this.player.anims.play('up',true);
+    
         }
         else if (this.clavier.S.isDown) {
             this.player.setVelocityY(260);
-            this.player.anims.play('down', true);
+            this.player.anims.play('down',true);
         }
-        else {this.player.setVelocityY(0)}
+        else {this.player.setVelocityY(0)
+            
+        }
+        
 
         if (this.clavier.Q.isDown) {
             this.player.setVelocityX(-260);
@@ -260,12 +237,16 @@ class monjeu extends Phaser.Scene {
         }
         else if (this.clavier.D.isDown) {
             this.player.setVelocityX(260);
-            this.player.anims.play('right', true);
+            this.player.anims.play('right',true);
         }
         else {
             this.player.setVelocityX(0)
-            this.player.anims.play('idle', true);
+            
         }
+        if(Math.abs(this.player.body.velocity.x) < 1 && Math.abs(this.player.body.velocity.y) < 1){
+            console.log("test")
+            this.player.anims.play("idle",true )
+            }
 
     }
     handlePlayerEnemyCollision() {

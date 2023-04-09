@@ -14,7 +14,7 @@ class Dortoire extends Phaser.Scene {
         this.load.spritesheet('Chests', 'assets/sprites/Chests.png',
             { frameWidth: 32, frameHeight: 32 });
 
-        this.load.spritesheet('enemy', 'assets/sprites/robot.sprites.png',
+            this.load.spritesheet('enemy', 'assets/sprites/Robot_Mouse-sheet.png',
             { frameWidth: 32, frameHeight: 32 });
 
 
@@ -28,7 +28,7 @@ class Dortoire extends Phaser.Scene {
 
         this.player;
         this.enemy;
-
+        this.hp = 100;
         //this.npc;
 
 
@@ -57,10 +57,9 @@ class Dortoire extends Phaser.Scene {
 
         this.player = this.physics.add.sprite(this.coX, this.coY, 'player').setSize(15,25).setOffset(7,5);
         this.player.setDepth(1)
+        this.enemy = this.physics.add.sprite(71 * 16, 93 * 16, 'enemy').setSize(18,23).setOffset(11,8);
+        this.enemy.setDepth(1);
 
-        //this.enemy = enemy = this.physics.add.sprite(155 * 16, 287 * 16, 'enemy');
-        //this.enemy.setCollideWorldBounds(true);
-        //this.enemy.setDepth(1);
 
 
 
@@ -74,6 +73,18 @@ class Dortoire extends Phaser.Scene {
         this.Deco3.setCollisionByProperty({ estSolide: true });
         this.physics.add.collider(this.player, this.Deco3);
 
+        this.murnoir.setCollisionByProperty({ estSolide: true });
+        this.physics.add.collider(this.enemy, this.murnoir);
+        this.Deco1.setCollisionByProperty({ estSolide: true });
+        this.physics.add.collider(this.enemy, this.Deco1);
+        this.Deco2.setCollisionByProperty({ estSolide: true });
+        this.physics.add.collider(this.enemy, this.Deco2);
+        this.Deco3.setCollisionByProperty({ estSolide: true });
+        this.physics.add.collider(this.enemy, this.Deco3);
+
+        this.physics.add.collider(this.player, this.enemy, this.handlePlayerEnemyCollision, null, this);
+
+        //next Scene
         Teleportation.setCollisionByExclusion(-1, true);
         this.physics.add.collider(this.player, Teleportation, this.changeScene, null, this);
 
@@ -130,28 +141,53 @@ class Dortoire extends Phaser.Scene {
 
     }
     update() {
+        var distance = Phaser.Math.Distance.Between(this.enemy.x, this.enemy.y, this.player.x, this.player.y);
+        if(distance < 300){
+            this.enemy.setVelocityX(this.player.x-this.enemy.x)
+            this.enemy.setVelocityY(this.player.y-this.enemy.y)
+        }
+        else{this.enemy.setVelocity(0)}
 
         if (this.clavier.Z.isDown) {
             this.player.setVelocityY(-260);
-            this.player.anims.play('up', true);
+            this.player.anims.play('up',true);
+    
         }
         else if (this.clavier.S.isDown) {
             this.player.setVelocityY(260);
-            this.player.anims.play('down', true);
+            this.player.anims.play('down',true);
         }
-        else if (this.clavier.Q.isDown) {
+        else {this.player.setVelocityY(0)
+            
+        }
+        
+
+        if (this.clavier.Q.isDown) {
             this.player.setVelocityX(-260);
             this.player.anims.play('left', true);
         }
         else if (this.clavier.D.isDown) {
             this.player.setVelocityX(260);
-            this.player.anims.play('right', true);
+            this.player.anims.play('right',true);
         }
         else {
             this.player.setVelocityX(0)
-            this.player.setVelocityY(0);
-            this.player.anims.play('idle', true);
+            
         }
+        if(Math.abs(this.player.body.velocity.x) < 1 && Math.abs(this.player.body.velocity.y) < 1){
+            console.log("test")
+            this.player.anims.play("idle",true )
+            }
+    }
+    handlePlayerEnemyCollision() {
+        this.hp -= 10
+        this.player.setTint(0xff0000);
+        if (this.hp <= 0) {
+            this.handlePlayerDeath();
+        };
+    }
+    handlePlayerDeath() {
+        this.scene.start("Labo",  {x: 51 * 16, y: 74 * 16});
     }
     changeScene() {
         this.scene.start("monjeu", { x: 2 * 16, y: 271 * 16 })
