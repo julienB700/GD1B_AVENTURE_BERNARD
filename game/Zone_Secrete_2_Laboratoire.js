@@ -182,7 +182,6 @@ class Labo extends Phaser.Scene {
             
         }
         if(Math.abs(this.player.body.velocity.x) < 1 && Math.abs(this.player.body.velocity.y) < 1){
-            console.log("test")
             this.player.anims.play("idle",true )
             }
     }

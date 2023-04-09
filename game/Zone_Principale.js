@@ -30,7 +30,7 @@ class monjeu extends Phaser.Scene {
 
         this.player;
         this.enemy;
-        this.hp = 100;
+        this.hp = 9;
 
 
         this.add.image(300,300,"background");
@@ -205,7 +205,24 @@ class monjeu extends Phaser.Scene {
 
         this.add.image(this.player.x+ 155,289, "UI").setScale(1).setScrollFactor(0);
     }
+    handlePlayerEnemyCollision() {
+        this.hp -= 1
+        if (this.hp === 0) {
+            this.player.setTint(0xff0000)
+            this.handlePlayerDeath();
+        }
+        this.player.invulnerable = true;
+        this.sleep(100).then(() => {
 
+            setTimeout(()=>{
+            console.log("testHit")
+            this.player.invulnerable= false
+            },1000);
+        
+
+            }   
+        )
+        }
     update() {
         var distance = Phaser.Math.Distance.Between(this.enemy.x, this.enemy.y, this.player.x, this.player.y);
         if(distance < 300){
@@ -214,7 +231,7 @@ class monjeu extends Phaser.Scene {
             
         }
         else{this.enemy.setVelocity(0)
-            this.enemy.anims.play('right_mob')
+            
         }
 
         if (this.clavier.Z.isDown) {
@@ -244,17 +261,15 @@ class monjeu extends Phaser.Scene {
             
         }
         if(Math.abs(this.player.body.velocity.x) < 1 && Math.abs(this.player.body.velocity.y) < 1){
-            console.log("test")
+            
             this.player.anims.play("idle",true )
             }
 
     }
-    handlePlayerEnemyCollision() {
-        this.hp -= 10
-        this.player.setTint(0xff0000);
-        if (this.hp <= 0) {
-            this.handlePlayerDeath();
-        };
+    
+    
+    sleep = (milliseconds) => {
+        return new Promise(resolve => setTimeout(resolve, milliseconds));
     }
     handlePlayerDeath() {
         this.scene.start("Labo",  {x: 51 * 16, y: 74 * 16});
