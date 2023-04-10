@@ -1,6 +1,7 @@
 class monjeu extends Phaser.Scene {
     constructor() {
         super("monjeu");
+        this.player_invulnerable = false;
     }
     init(data){
         this.coX = data.x 
@@ -28,10 +29,10 @@ class monjeu extends Phaser.Scene {
     create() {
 
 
-        this.player;
-        this.enemy;
+        
         this.hp = 9;
-
+        this.timer = false
+        
 
         this.add.image(300,300,"background");
 
@@ -70,7 +71,7 @@ class monjeu extends Phaser.Scene {
         this.Ciel.setDepth(2);
         this.SurCiel = map.createLayer('Calque 7 SurCiel', tileset)
         this.SurCiel.setDepth(3);
-        //this.Teleportation = map.createLayer('Calque 8 Teleportation', tileset)
+       
 
         if(this.coX && this.coY){
             this.player = this.physics.add.sprite(this.coX, this.coY, 'player').setSize(15,25).setOffset(7,5);
@@ -82,6 +83,7 @@ class monjeu extends Phaser.Scene {
 
         this.enemy = this.physics.add.sprite(155 * 16, 249 * 16, 'enemy').setSize(18,23).setOffset(11,8);
         this.enemy.setDepth(1);
+
 
         //this.enemy = enemy = this.physics.add.sprite(155 * 16, 287 * 16, 'enemy');
         //this.enemy.setCollideWorldBounds(true);
@@ -133,7 +135,6 @@ class monjeu extends Phaser.Scene {
         this.physics.add.collider(this.player, tp5,this.changeScene5, null, this);
 
         this.clavier = this.input.keyboard.addKeys('S,Q,D,Z,SPACE,SHIFT');
-        this.add.image(this.player.x+333*16 ,450*16 , "UI").setScale(1).setScrollFactor(0);
 
         // Create interact button
         this.interactButton = this.input.keyboard.addKey('E');
@@ -203,33 +204,35 @@ class monjeu extends Phaser.Scene {
             repeat: -1
         });
 
-        this.add.image(this.player.x+ 155,289, "UI").setScale(1).setScrollFactor(0);
+        this.add.sprite(480,280, "UI").setScale(0.8).setScrollFactor(0).setDepth(4);
+        
     }
     handlePlayerEnemyCollision() {
-        this.hp -= 1
+        if (this.player_invulnerable == false) {this.hp -= 1 ; console.log("- 1 HP");
+        this.player_invulnerable = true;
+        this.sleep(1000).then(() => {
+
+            setTimeout(()=>{
+            console.log("testHit")
+            this.player_invulnerable= false
+            },1000);
+            }
+            )}
+    
         if (this.hp === 0) {
             this.player.setTint(0xff0000)
             this.handlePlayerDeath();
         }
-        this.player.invulnerable = true;
-        this.sleep(100).then(() => {
-
-            setTimeout(()=>{
-            console.log("testHit")
-            this.player.invulnerable= false
-            },1000);
+       
+            }  
         
-
-            }   
-        )
-        }
-    update() {
+    update(time,delta) {
         var distance = Phaser.Math.Distance.Between(this.enemy.x, this.enemy.y, this.player.x, this.player.y);
         if(distance < 300){
             this.enemy.setVelocityX(this.player.x-this.enemy.x)
             this.enemy.setVelocityY(this.player.y-this.enemy.y)
-            
         }
+
         else{this.enemy.setVelocity(0)
             
         }
@@ -237,12 +240,28 @@ class monjeu extends Phaser.Scene {
         if (this.clavier.Z.isDown) {
             this.player.setVelocityY(-260);
             this.player.anims.play('up',true);
-    
         }
+        
         else if (this.clavier.S.isDown) {
             this.player.setVelocityY(260);
             this.player.anims.play('down',true);
         }
+
+        else {this.player.setVelocityY(0)
+            
+        }
+      
+
+        if (this.clavier.Z.isDown) {
+            this.player.setVelocityY(-260);
+            this.player.anims.play('up',true);
+        }
+        
+        else if (this.clavier.S.isDown) {
+            this.player.setVelocityY(260);
+            this.player.anims.play('down',true);
+        }
+
         else {this.player.setVelocityY(0)
             
         }

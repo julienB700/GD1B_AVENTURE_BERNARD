@@ -1,12 +1,14 @@
 class Dortoire extends Phaser.Scene {
     constructor() {
         super("Dortoire");
+        this.player_invulnerable = false;
     }
     init(data){
         this.coX = data.x 
         this.coY = data.y
     }
     preload() {
+        this.load.image("UI","Assets/ui.png");
         this.load.image('Tileset1', 'assets/maps/newstileset.png');
 
         this.load.spritesheet('player', 'assets/sprites/supercat_sprites.png',
@@ -28,7 +30,7 @@ class Dortoire extends Phaser.Scene {
 
         this.player;
         this.enemy;
-        this.hp = 100;
+        this.hp = 9;
         //this.npc;
 
 
@@ -57,6 +59,7 @@ class Dortoire extends Phaser.Scene {
 
         this.player = this.physics.add.sprite(this.coX, this.coY, 'player').setSize(15,25).setOffset(7,5);
         this.player.setDepth(1)
+        
         this.enemy = this.physics.add.sprite(71 * 16, 93 * 16, 'enemy').setSize(18,23).setOffset(11,8);
         this.enemy.setDepth(1);
 
@@ -84,6 +87,7 @@ class Dortoire extends Phaser.Scene {
 
         this.physics.add.collider(this.player, this.enemy, this.handlePlayerEnemyCollision, null, this);
 
+
         //next Scene
         Teleportation.setCollisionByExclusion(-1, true);
         this.physics.add.collider(this.player, Teleportation, this.changeScene, null, this);
@@ -101,7 +105,7 @@ class Dortoire extends Phaser.Scene {
         this.camera.startFollow(this.player);
         this.camera.setDeadzone(100, 100);
         this.camera.setBounds(0, 0, 100 * 16, 100 * 16);
-        this.cameras.main.zoom = 2
+        this.cameras.main.zoom = 1.8
 
 
         this.anims.create({
@@ -139,7 +143,45 @@ class Dortoire extends Phaser.Scene {
             repeat: -1
         });
 
+        this.add.sprite(480,280, "UI").setScale(0.8).setScrollFactor(0).setDepth(4);
+        
     }
+    handlePlayerEnemyCollision() {
+        if (this.player_invulnerable == false) {this.hp -= 1 ; console.log("- 1 HP");
+        this.player_invulnerable = true;
+        this.sleep(1000).then(() => {
+
+            setTimeout(()=>{
+            console.log("testHit")
+            this.player_invulnerable= false
+            },1000);
+            }
+            )}
+    
+        if (this.hp === 0) {
+            this.player.setTint(0xff0000)
+            this.handlePlayerDeath();
+        }
+       
+            }  
+    handlePlayerEnemyCollision() {
+        if (this.player_invulnerable == false) {this.hp -= 1 ; console.log("- 1 HP");
+        this.player_invulnerable = true;
+        this.sleep(1000).then(() => {
+
+            setTimeout(()=>{
+            console.log("testHit")
+            this.player_invulnerable= false
+            },1000);
+            }
+            )}
+    
+        if (this.hp === 0) {
+            this.player.setTint(0xff0000)
+            this.handlePlayerDeath();
+        }
+       
+            }  
     update() {
         var distance = Phaser.Math.Distance.Between(this.enemy.x, this.enemy.y, this.player.x, this.player.y);
         if(distance < 300){
@@ -179,13 +221,11 @@ class Dortoire extends Phaser.Scene {
             this.player.anims.play("idle",true )
             }
     }
-    handlePlayerEnemyCollision() {
-        this.hp -= 10
-        this.player.setTint(0xff0000);
-        if (this.hp <= 0) {
-            this.handlePlayerDeath();
-        };
+
+    sleep = (milliseconds) => {
+        return new Promise(resolve => setTimeout(resolve, milliseconds));
     }
+
     handlePlayerDeath() {
         this.scene.start("Labo",  {x: 51 * 16, y: 74 * 16});
     }

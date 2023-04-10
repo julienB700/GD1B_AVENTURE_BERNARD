@@ -1,8 +1,11 @@
 class Hall extends Phaser.Scene {
+    
     constructor() {
         super("Hall");
+        this.player_invulnerable = false;
     }
     preload() {
+        this.load.image("UI","Assets/ui.png");
         this.load.image('Tileset1', 'assets/maps/newstileset.png');
 
         this.load.spritesheet('player', 'assets/sprites/supercat_sprites.png',
@@ -94,7 +97,7 @@ class Hall extends Phaser.Scene {
         this.camera.startFollow(this.player);
         this.camera.setDeadzone(100, 100);
         this.camera.setBounds(0, 0, 100 * 16, 100 * 16);
-        this.cameras.main.zoom = 2
+        this.cameras.main.zoom = 1.8
 
 
         this.anims.create({
@@ -132,7 +135,27 @@ class Hall extends Phaser.Scene {
             repeat: -1
         });
 
+        this.add.sprite(480,280, "UI").setScale(0.8).setScrollFactor(0).setDepth(4);
+        
     }
+    handlePlayerEnemyCollision() {
+        if (this.player_invulnerable == false) {this.hp -= 1 ; console.log("- 1 HP");
+        this.player_invulnerable = true;
+        this.sleep(1000).then(() => {
+
+            setTimeout(()=>{
+            console.log("testHit")
+            this.player_invulnerable= false
+            },1000);
+            }
+            )}
+    
+        if (this.hp === 0) {
+            this.player.setTint(0xff0000)
+            this.handlePlayerDeath();
+        }
+       
+            }  
     update() {
         var distance = Phaser.Math.Distance.Between(this.enemy.x, this.enemy.y, this.player.x, this.player.y);
         if(distance < 300){
@@ -167,7 +190,6 @@ class Hall extends Phaser.Scene {
             
         }
         if(Math.abs(this.player.body.velocity.x) < 1 && Math.abs(this.player.body.velocity.y) < 1){
-  
             this.player.anims.play("idle",true )
             }
     }
